@@ -10,8 +10,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import javax.swing.JOptionPane;
-import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import javax.swing.table.DefaultTableModel;
 
 
@@ -66,16 +66,66 @@ public class Final extends javax.swing.JFrame {
                 
                 String tbData[] = {id,product,qty};
                     DefaultTableModel tblModel = (DefaultTableModel)tbl1.getModel();
-                    
                     tblModel.addRow(tbData);
+                    
                 
             
             }
 
         } catch (Exception ex) {
             Logger.getLogger(Final.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }   
     }
+    
+    public void fetch2(){
+        txtid.setEnabled(false);
+        txtname.setEnabled(false);
+        txtage.setEnabled(false);
+        cmdadd.setEnabled(true);
+        cmdsave.setEnabled(false);
+        cmdedit.setEnabled(true);
+        cmdupdate.setEnabled(false);
+        cmddelete.setEnabled(true);
+        cmdexit.setText("Exit");
+        tbl1.setEnabled(true);
+        try {
+            
+
+            String db = "jdbc:mysql://localhost:3306/javaproject";
+            String username = "root";
+            String password = "";
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection(db, username, password);
+            PreparedStatement ps = con.prepareStatement("select * from inventory order by id asc");
+
+            ResultSet rs = ps.executeQuery();
+            
+            while(rs.next()){
+                String id = String.valueOf(rs.getInt("id"));
+                String product = rs.getString("product");
+                String qty = rs.getString("qty");
+                
+                txtid.setText(""+id);
+                txtname.setText(product);
+                txtage.setText(""+qty);
+               
+                
+                
+                String tbData[] = {id,product,qty};
+                    DefaultTableModel tblModel = (DefaultTableModel)tbl1.getModel();
+                    tblModel.addRow(tbData);
+                    tblModel.setRowCount(ABORT);
+                
+            
+            }
+
+        } catch (Exception ex) {
+            Logger.getLogger(Final.class.getName()).log(Level.SEVERE, null, ex);
+        }  
+    }
+    
+   
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -103,7 +153,7 @@ public class Final extends javax.swing.JFrame {
         tbl1 = new javax.swing.JTable();
         cmddelete = new javax.swing.JButton();
         cmdsearch = new javax.swing.JButton();
-        txtid1 = new javax.swing.JTextField();
+        txtsearch = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         cmdsave = new javax.swing.JButton();
         cmdupdate = new javax.swing.JButton();
@@ -169,9 +219,17 @@ public class Final extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "NAME", "AGE", "GENDER"
+                "ID", "PRODUCTS", "QTY"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         tbl1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tbl1MouseClicked(evt);
@@ -233,7 +291,7 @@ public class Final extends javax.swing.JFrame {
                                 .addGap(33, 33, 33)
                                 .addComponent(jLabel5)))
                         .addGap(18, 18, 18)
-                        .addComponent(txtid1)
+                        .addComponent(txtsearch)
                         .addGap(18, 18, 18)
                         .addComponent(cmdsearch, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -269,7 +327,7 @@ public class Final extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cmdsearch, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtid1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtsearch, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel5)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -388,7 +446,9 @@ public class Final extends javax.swing.JFrame {
                     Logger.getLogger(Final.class.getName()).log(Level.SEVERE, null, ex);
                 }
             JOptionPane.showMessageDialog(this,"Deleted Successfully");
+            fetch2();
             fetch();
+            
         }
     }//GEN-LAST:event_cmddeleteActionPerformed
 
@@ -427,7 +487,53 @@ public class Final extends javax.swing.JFrame {
     }//GEN-LAST:event_tbl1MouseClicked
 
     private void cmdsearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdsearchActionPerformed
-        // TODO add your handling code here:
+        txtid.setEnabled(false);
+        txtname.setEnabled(false);
+        txtage.setEnabled(false);
+        cmdadd.setEnabled(true);
+        cmdsave.setEnabled(false);
+        cmdedit.setEnabled(true);
+        cmdupdate.setEnabled(false);
+        cmddelete.setEnabled(true);
+        cmdexit.setText("Exit");
+        tbl1.setEnabled(true);
+        String products = txtsearch.getText();
+        try {
+            
+
+            String db = "jdbc:mysql://localhost:3306/javaproject";
+            String username = "root";
+            String password = "";
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection(db, username, password);
+            PreparedStatement ps = con.prepareStatement("select * from inventory where product = ? order by id asc");
+            ps.setString(1,products);
+
+            ResultSet rs = ps.executeQuery();
+            
+            while(rs.next()){
+                String id = String.valueOf(rs.getInt("id"));
+                String product = rs.getString("product");
+                String qty = rs.getString("qty");
+                
+                txtid.setText(""+id);
+                txtname.setText(product);
+                txtage.setText(""+qty);
+                
+                String tbData[] = {id,product,qty};
+                    DefaultTableModel tblModel = (DefaultTableModel)tbl1.getModel();
+                    tblModel.setRowCount(0); 
+                    tblModel.addRow(tbData);  
+                    
+            
+            }
+
+        } catch (Exception ex) {
+            Logger.getLogger(Final.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
     }//GEN-LAST:event_cmdsearchActionPerformed
 
     private void cmdsaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdsaveActionPerformed
@@ -457,7 +563,8 @@ public class Final extends javax.swing.JFrame {
                 }
                 
             }
-        
+        fetch2();
+        fetch();
     }//GEN-LAST:event_cmdsaveActionPerformed
 
     private void cmdupdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdupdateActionPerformed
@@ -486,6 +593,7 @@ public class Final extends javax.swing.JFrame {
                 Logger.getLogger(Final.class.getName()).log(Level.SEVERE, null, ex);
             }
             JOptionPane.showMessageDialog(this,"Updated Successfully");
+            fetch2();
             fetch();
         }
     }//GEN-LAST:event_cmdupdateActionPerformed
@@ -545,7 +653,7 @@ public class Final extends javax.swing.JFrame {
     private javax.swing.JTable tbl1;
     private javax.swing.JTextField txtage;
     private javax.swing.JTextField txtid;
-    private javax.swing.JTextField txtid1;
     private javax.swing.JTextField txtname;
+    private javax.swing.JTextField txtsearch;
     // End of variables declaration//GEN-END:variables
 }
