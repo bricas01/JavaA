@@ -10,9 +10,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+
 
 
 /**
@@ -24,10 +24,8 @@ public class Final extends javax.swing.JFrame {
     /**
      * Creates new form Final
      */
-    public Final() {
-        initComponents();
-        fetch();
-    }
+    
+   
     
     public void fetch(){
         txtid.setEnabled(false);
