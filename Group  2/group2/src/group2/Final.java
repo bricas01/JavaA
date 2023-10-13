@@ -7,7 +7,6 @@ package group2;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
@@ -20,17 +19,24 @@ import javax.swing.table.DefaultTableModel;
  * @author Admin
  */
 public class Final extends javax.swing.JFrame {
-
+    Connection con = null;
     /**
      * Creates new form Final
+     * 
+     * 
      */
+     public Final() {
+        initComponents();
+        con = DBConnect.connect();
+        txtid.setVisible(false);
+    }
     
    
     
     public void fetch(){
         txtid.setEnabled(false);
-        txtname.setEnabled(false);
-        txtage.setEnabled(false);
+        txtproduct.setEnabled(false);
+        txtqty.setEnabled(false);
         cmdadd.setEnabled(true);
         cmdsave.setEnabled(false);
         cmdedit.setEnabled(true);
@@ -40,13 +46,6 @@ public class Final extends javax.swing.JFrame {
         tbl1.setEnabled(true);
         try {
             
-
-            String db = "jdbc:mysql://localhost:3306/javaproject";
-            String username = "root";
-            String password = "";
-
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection con = DriverManager.getConnection(db, username, password);
             PreparedStatement ps = con.prepareStatement("select * from inventory order by id asc");
 
             ResultSet rs = ps.executeQuery();
@@ -57,8 +56,8 @@ public class Final extends javax.swing.JFrame {
                 String qty = rs.getString("qty");
                 
                 txtid.setText(""+id);
-                txtname.setText(product);
-                txtage.setText(""+qty);
+                txtproduct.setText(product);
+                txtqty.setText(""+qty);
                
                 
                 
@@ -77,8 +76,8 @@ public class Final extends javax.swing.JFrame {
     
     public void fetch2(){
         txtid.setEnabled(false);
-        txtname.setEnabled(false);
-        txtage.setEnabled(false);
+        txtproduct.setEnabled(false);
+        txtqty.setEnabled(false);
         cmdadd.setEnabled(true);
         cmdsave.setEnabled(false);
         cmdedit.setEnabled(true);
@@ -88,13 +87,6 @@ public class Final extends javax.swing.JFrame {
         tbl1.setEnabled(true);
         try {
             
-
-            String db = "jdbc:mysql://localhost:3306/javaproject";
-            String username = "root";
-            String password = "";
-
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection con = DriverManager.getConnection(db, username, password);
             PreparedStatement ps = con.prepareStatement("select * from inventory order by id asc");
 
             ResultSet rs = ps.executeQuery();
@@ -105,15 +97,15 @@ public class Final extends javax.swing.JFrame {
                 String qty = rs.getString("qty");
                 
                 txtid.setText(""+id);
-                txtname.setText(product);
-                txtage.setText(""+qty);
+                txtproduct.setText(product);
+                txtqty.setText(""+qty);
                
                 
                 
                 String tbData[] = {id,product,qty};
                     DefaultTableModel tblModel = (DefaultTableModel)tbl1.getModel();
                     tblModel.addRow(tbData);
-                    tblModel.setRowCount(ABORT);
+                    tblModel.setRowCount(0);
                 
             
             }
@@ -138,12 +130,11 @@ public class Final extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         buttonGroup1 = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
         txtid = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        txtname = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
-        txtage = new javax.swing.JTextField();
+        txtproduct = new javax.swing.JTextField();
+        Category = new javax.swing.JLabel();
+        txtqty = new javax.swing.JTextField();
         cmdadd = new javax.swing.JButton();
         cmdedit = new javax.swing.JButton();
         cmdexit = new javax.swing.JButton();
@@ -155,6 +146,11 @@ public class Final extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         cmdsave = new javax.swing.JButton();
         cmdupdate = new javax.swing.JButton();
+        txtcategory = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        txtproduct1 = new javax.swing.JTextField();
+        txtproduct2 = new javax.swing.JTextField();
+        txtproduct3 = new javax.swing.JTextField();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -173,17 +169,13 @@ public class Final extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(0, 102, 102));
 
-        jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("ID");
-
         jLabel2.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Product");
 
-        jLabel4.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("Qty");
+        Category.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        Category.setForeground(new java.awt.Color(255, 255, 255));
+        Category.setText("Category");
 
         cmdadd.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         cmdadd.setForeground(new java.awt.Color(0, 102, 102));
@@ -275,47 +267,65 @@ public class Final extends javax.swing.JFrame {
             }
         });
 
+        jLabel6.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel6.setText("Qty");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(9, 9, 9)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addGap(33, 33, 33)
-                                .addComponent(jLabel5)))
-                        .addGap(18, 18, 18)
-                        .addComponent(txtsearch)
-                        .addGap(18, 18, 18)
-                        .addComponent(cmdsearch, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(7, 7, 7)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(36, 36, 36))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(18, 18, 18)))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtage, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
-                            .addComponent(txtname, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(txtid, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                                .addComponent(txtid, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel5)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtsearch)
+                                .addGap(18, 18, 18)
+                                .addComponent(cmdsearch, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 551, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addComponent(cmddelete, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                                                .addComponent(cmdexit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                            .addComponent(cmdupdate, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(cmdedit, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(cmdsave, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cmdadd, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 566, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(cmddelete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(cmdexit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(cmdadd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(cmdsave, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(cmdedit, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE))
-                            .addComponent(cmdupdate, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(Category)
+                                .addGap(45, 45, 45))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(9, 9, 9)
+                                        .addComponent(jLabel2))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addComponent(jLabel6)))
+                                .addGap(18, 18, 18)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtcategory, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtproduct1, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtqty, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(107, 107, 107)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtproduct3, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtproduct2, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtproduct, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -326,34 +336,39 @@ public class Final extends javax.swing.JFrame {
                     .addComponent(cmdsearch, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(txtsearch, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel5)))
+                        .addComponent(jLabel5)
+                        .addComponent(txtid, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(38, 38, 38)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtproduct1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtproduct2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtid, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(txtcategory, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Category)
+                    .addComponent(txtproduct, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtname, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(txtage, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addComponent(txtqty, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addComponent(txtproduct3, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(cmdadd, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(cmdsave, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(18, 18, 18)
                         .addComponent(cmdedit, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cmdupdate, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
-                        .addComponent(cmddelete, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(cmddelete, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(27, 27, 27)
                         .addComponent(cmdexit, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -369,12 +384,13 @@ public class Final extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void cmdaddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdaddActionPerformed
         txtid.setText("");
-        txtname.setText("");
-        txtage.setText("");
+        txtproduct.setText("");
+        txtqty.setText("");
         cmdexit.setText("CANCEL");
         cmdedit.setEnabled(false);
         cmdsave.setEnabled(true);
@@ -384,8 +400,8 @@ public class Final extends javax.swing.JFrame {
         cmddelete.setEnabled(false);
         tbl1.setEnabled(false);
         txtid.setEnabled(false);
-        txtname.setEnabled(true);
-        txtage.setEnabled(true);
+        txtproduct.setEnabled(true);
+        txtqty.setEnabled(true);
         
         
 
@@ -402,8 +418,8 @@ public class Final extends javax.swing.JFrame {
         cmdedit.setEnabled(false);
         tbl1.setEnabled(false);
         txtid.setEnabled(true);
-        txtname.setEnabled(true);
-        txtage.setEnabled(true);
+        txtproduct.setEnabled(true);
+        txtqty.setEnabled(true);
         
         
     }//GEN-LAST:event_cmdeditActionPerformed
@@ -417,24 +433,22 @@ public class Final extends javax.swing.JFrame {
             cmdedit.setEnabled(true);
             tbl1.setEnabled(true);
             txtid.setEnabled(false);
-            txtname.setEnabled(false);
-            txtage.setEnabled(false);
+            txtproduct.setEnabled(false);
+            txtqty.setEnabled(false);
         }else{
-            System.exit(0);
+            Menu MenuFrame = new Menu();
+           // FinalFrame.setVisible(true);
+            MenuFrame.pack();
+            MenuFrame.setLocationRelativeTo(null);
+            this.dispose();
         }
     }//GEN-LAST:event_cmdexitActionPerformed
 
     private void cmddeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmddeleteActionPerformed
+        String id = txtid.getText();
         int result = JOptionPane.showConfirmDialog(this,"Do you want to delete this record","Confirmation",JOptionPane.YES_NO_OPTION);
         if(result == JOptionPane.YES_OPTION){
             try {
-                    String id = txtid.getText();
-                    String db = "jdbc:mysql://localhost:3306/javaproject";
-                    String username = "root";
-                    String password = "";
-
-                    Class.forName("com.mysql.cj.jdbc.Driver");
-                    Connection con = DriverManager.getConnection(db, username, password);
                     PreparedStatement ps = con.prepareStatement("delete from inventory where id = ?");
                     ps.setString(1,id);
                     ps.executeUpdate();
@@ -455,13 +469,6 @@ public class Final extends javax.swing.JFrame {
         String tc = tbl1.getModel().getValueAt(row, 0).toString();
         try {
             
-
-            String db = "jdbc:mysql://localhost:3306/javaproject";
-            String username = "root";
-            String password = "";
-
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection con = DriverManager.getConnection(db, username, password);
             PreparedStatement ps = con.prepareStatement("select * from inventory where id="+tc+" ");
 
             ResultSet rs = ps.executeQuery();
@@ -473,8 +480,8 @@ public class Final extends javax.swing.JFrame {
                
                 
                 txtid.setText(""+id);
-                txtname.setText(product);
-                txtage.setText(""+qty);
+                txtproduct.setText(product);
+                txtqty.setText(""+qty);
                
                 
             }
@@ -485,9 +492,10 @@ public class Final extends javax.swing.JFrame {
     }//GEN-LAST:event_tbl1MouseClicked
 
     private void cmdsearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdsearchActionPerformed
+       
         txtid.setEnabled(false);
-        txtname.setEnabled(false);
-        txtage.setEnabled(false);
+        txtproduct.setEnabled(false);
+        txtqty.setEnabled(false);
         cmdadd.setEnabled(true);
         cmdsave.setEnabled(false);
         cmdedit.setEnabled(true);
@@ -498,13 +506,6 @@ public class Final extends javax.swing.JFrame {
         String products = txtsearch.getText();
         try {
             
-
-            String db = "jdbc:mysql://localhost:3306/javaproject";
-            String username = "root";
-            String password = "";
-
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection con = DriverManager.getConnection(db, username, password);
             PreparedStatement ps = con.prepareStatement("select * from inventory where product = ? order by id asc");
             ps.setString(1,products);
 
@@ -516,20 +517,19 @@ public class Final extends javax.swing.JFrame {
                 String qty = rs.getString("qty");
                 
                 txtid.setText(""+id);
-                txtname.setText(product);
-                txtage.setText(""+qty);
+                txtproduct.setText(product);
+                txtqty.setText(""+qty);
                 
                 String tbData[] = {id,product,qty};
                     DefaultTableModel tblModel = (DefaultTableModel)tbl1.getModel();
-                    tblModel.setRowCount(0); 
-                    tblModel.addRow(tbData);  
+                    tblModel.addRow(tbData);   
                     
-            
             }
 
         } catch (Exception ex) {
             Logger.getLogger(Final.class.getName()).log(Level.SEVERE, null, ex);
         }
+        fetch2();
         
         
     }//GEN-LAST:event_cmdsearchActionPerformed
@@ -539,15 +539,9 @@ public class Final extends javax.swing.JFrame {
             int result = JOptionPane.showConfirmDialog(this,"Do you want to add this record?","Confirmation",JOptionPane.YES_NO_OPTION);
             if(result == JOptionPane.YES_OPTION){
                 try {
-                    String product = txtname.getText();
-                    String qty = txtage.getText();
+                    String product = txtproduct.getText();
+                    String qty = txtqty.getText();
 
-                    String db = "jdbc:mysql://localhost:3306/javaproject";
-                    String username = "root";
-                    String password = "";
-
-                    Class.forName("com.mysql.cj.jdbc.Driver");
-                    Connection con = DriverManager.getConnection(db, username, password);
                     PreparedStatement ps = con.prepareStatement("insert into inventory(product,qty) values(?,?)");
                     ps.setString(1,product);
                     ps.setString(2,qty);
@@ -570,16 +564,9 @@ public class Final extends javax.swing.JFrame {
         if(result == JOptionPane.YES_OPTION){
             try {
                 String id = txtid.getText();
-                String product = txtname.getText();
-                String qty = txtage.getText();
+                String product = txtproduct.getText();
+                String qty = txtqty.getText();
 
-
-                String db = "jdbc:mysql://localhost:3306/javaproject";
-                String username = "root";
-                String password = "";
-
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                Connection con = DriverManager.getConnection(db, username, password);
                 PreparedStatement ps = con.prepareStatement("update inventory set product = ?,qty = ? where id = ?");
                 ps.setString(1,product);
                 ps.setString(2,qty);
@@ -632,6 +619,7 @@ public class Final extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel Category;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton cmdadd;
     private javax.swing.JButton cmddelete;
@@ -640,18 +628,21 @@ public class Final extends javax.swing.JFrame {
     private javax.swing.JButton cmdsave;
     private javax.swing.JButton cmdsearch;
     private javax.swing.JButton cmdupdate;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable tbl1;
-    private javax.swing.JTextField txtage;
+    private javax.swing.JTextField txtcategory;
     private javax.swing.JTextField txtid;
-    private javax.swing.JTextField txtname;
+    private javax.swing.JTextField txtproduct;
+    private javax.swing.JTextField txtproduct1;
+    private javax.swing.JTextField txtproduct2;
+    private javax.swing.JTextField txtproduct3;
+    private javax.swing.JTextField txtqty;
     private javax.swing.JTextField txtsearch;
     // End of variables declaration//GEN-END:variables
 }

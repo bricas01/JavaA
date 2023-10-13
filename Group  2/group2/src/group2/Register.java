@@ -12,6 +12,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import java.util.Base64;
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 
 /**
  *
@@ -54,6 +56,7 @@ public class Register extends javax.swing.JFrame {
         checkpassword = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Register");
 
         jLabel1.setText("Firstname");
 
@@ -155,6 +158,7 @@ public class Register extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void cmdregisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdregisterActionPerformed
@@ -163,6 +167,10 @@ public class Register extends javax.swing.JFrame {
         String username = txtusername.getText();
         String password = txtpassword.getText();
         int admin;
+        boolean a=false;
+        byte [] encrypt = Base64.getEncoder().encode(password.getBytes());
+       
+        
         String confirmpassword = txtconfirmpassword.getText();
         if(checkadmin.isSelected()){
              admin = 1;
@@ -172,26 +180,42 @@ public class Register extends javax.swing.JFrame {
         if(!password.equals(confirmpassword)){
             JOptionPane.showMessageDialog(null, "Password doesn't match", "Invalid", ERROR_MESSAGE);
         }else{
-            try{
-            
-            String q = "INSERT INTO login (firstname,lastname,username,password,status) VALUES (?,?,?,?,?)";
-            PreparedStatement pst = con.prepareStatement(q);
-            pst.setString(1,firstname);
-            pst.setString(2,lastname);
-            pst.setString(3,username);
-            pst.setString(4,password);
-            pst.setInt(5,admin);
-            pst.execute();
-            
-        }catch (Exception e){
-        
-        }
+            int result = JOptionPane.showConfirmDialog(this,"Are you sure, Do you want to add this user?","Confirmation",JOptionPane.YES_NO_OPTION);
+            if(result == JOptionPane.YES_OPTION){
+                try{
+
+                    String q = "INSERT INTO login (firstname,lastname,username,password,status) VALUES (?,?,?,?,?)";
+                    PreparedStatement pst = con.prepareStatement(q);
+                    pst.setString(1,firstname);
+                    pst.setString(2,lastname);
+                    pst.setString(3,username);
+                    pst.setString(4,new String (encrypt));
+                    pst.setInt(5,admin);
+                    pst.execute();
+
+                    JOptionPane.showMessageDialog(null, "Record added successfully", "Success", INFORMATION_MESSAGE);
+                    
+                    txtfirstname.setText("");
+                    txtlastname.setText("");
+                    txtusername.setText("");
+                    txtpassword.setText("");
+                    txtconfirmpassword.setText("");
+                    checkadmin.setSelected(a);
+
+                }catch (Exception e){
+
+                }
+            }
         }
         
     }//GEN-LAST:event_cmdregisterActionPerformed
 
     private void cmdcancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdcancelActionPerformed
-        System.exit(0);
+        Menu MenuFrame = new Menu();
+        // FinalFrame.setVisible(true);
+         MenuFrame.pack();
+         MenuFrame.setLocationRelativeTo(null);
+         this.dispose();
     }//GEN-LAST:event_cmdcancelActionPerformed
 
     private void checkpasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkpasswordActionPerformed
