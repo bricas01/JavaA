@@ -204,11 +204,16 @@ public class Login extends javax.swing.JFrame {
                         JOptionPane.showMessageDialog(null, "Welcome "+username, "Logged In", INFORMATION_MESSAGE);
                         
                         Menu MenuFrame = new Menu();
-                        MenuFrame.setVisible(true);
+                        
                         MenuFrame.pack();
                         MenuFrame.setLocationRelativeTo(null);
-                        setExtendedState(MAXIMIZED_BOTH);
                         this.dispose();
+                        MenuFrame.txtuser.setText(tusername);
+                        MenuFrame.setVisible(true);
+                        setExtendedState(MAXIMIZED_BOTH);
+                        
+                        
+                        
                         
                     }
                 }
